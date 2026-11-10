@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Studio Video Affiliate</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#c2345a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Studio Video">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#faf6f3; --card:#ffffff; --ink:#231a1c; --muted:#7a6a6e; --line:#ecdfe1;
+    --accent:#c2345a; --accent-soft:#fbe7ec; --ok:#1f7a4d; --warn:#a15c00;
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Plus Jakarta Sans",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  .wrap{max-width:980px;margin:0 auto;padding:24px 18px 60px}
+  header h1{font-size:28px;margin:0 0 4px;letter-spacing:-.02em}
+  header p{margin:0;color:var(--muted)}
+  .tabs{display:flex;gap:8px;margin:22px 0 18px;flex-wrap:wrap}
+  .tab{border:1px solid var(--line);background:var(--card);padding:10px 16px;border-radius:999px;font:inherit;font-weight:600;cursor:pointer;color:var(--muted)}
+  .tab.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .tab .n{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-size:12px;margin-right:6px}
+  .tab.active .n{background:#fff;color:var(--ink)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+  .card h2{font-size:18px;margin:0 0 12px}
+  .card h3{font-size:15px;margin:0 0 8px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:720px){.grid{grid-template-columns:1fr}}
+  label{display:block;font-weight:600;font-size:13px;margin-bottom:6px}
+  .hint{font-weight:400;color:var(--muted);font-size:12px}
+  input[type=text],textarea,select{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+  textarea{min-height:76px;resize:vertical}
+  .dur{display:flex;gap:8px;flex-wrap:wrap}
+  .dur button{flex:1;min-width:84px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 8px;font:inherit;cursor:pointer;text-align:center}
+  .dur button b{display:block;font-size:18px}
+  .dur button span{font-size:11px;color:var(--muted)}
+  .dur button.on{border-color:var(--accent);background:var(--accent-soft)}
+  .btn{border:0;background:var(--accent);color:#fff;font:inherit;font-weight:700;padding:12px 18px;border-radius:12px;cursor:pointer}
+  .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line);font-weight:600}
+  .btn.small{padding:7px 12px;font-size:13px;border-radius:9px}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .drop{border:2px dashed var(--line);border-radius:14px;padding:18px;text-align:center;color:var(--muted);cursor:pointer;background:#fffdfc}
+  .drop.over{border-color:var(--accent);background:var(--accent-soft)}
+  .photo-prev{display:flex;gap:14px;align-items:flex-start;margin-top:12px;flex-wrap:wrap}
+  .photo-prev canvas{max-width:220px;border-radius:12px;border:1px solid var(--line)}
+  .clip{border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;background:#fffdfc}
+  .clip .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+  .pill{font-size:12px;background:var(--accent-soft);color:var(--accent);padding:3px 10px;border-radius:999px;font-weight:700}
+  pre{white-space:pre-wrap;word-break:break-word;background:#f7f1f2;border-radius:10px;padding:12px;font-size:13px;margin:6px 0;font-family:ui-monospace,Menlo,monospace}
+  .narasi{background:#fff;border-left:3px solid var(--accent);padding:8px 12px;border-radius:6px;margin:6px 0;font-style:italic}
+  .note{font-size:13px;color:var(--muted);background:#fff8ec;border:1px solid #f2e2c4;border-radius:10px;padding:10px 12px}
+  .note.ok{background:#ecf7f0;border-color:#cfe9da;color:var(--ok)}
+  .status{font-size:13px;color:var(--muted);min-height:20px}
+  .cliplist .item{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px;background:#fff}
+  .cliplist video{width:64px;height:112px;object-fit:cover;border-radius:8px;background:#000}
+  .cliplist .ctrls{display:flex;flex-direction:column;gap:6px}
+  .preview{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}
+  #stage{width:270px;height:480px;border-radius:16px;background:#111;border:1px solid var(--line)}
+  .progress{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:10px}
+  .progress div{height:100%;width:0;background:var(--accent);transition:width .2s}
+  .hidden{display:none !important}
+  .check{display:flex;gap:8px;align-items:center;font-size:14px;margin:6px 0}
+  .check input{width:18px;height:18px}
+  .steps-ol{margin:0;padding-left:20px}
+  .steps-ol li{margin-bottom:6px}
+  .copybar{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Studio Video Affiliate</h1>
+    <p>Bikin video produk dengan AI gratis lewat Google Flow: rencana &amp; prompt → generate di Flow → rakit jadi satu video siap upload.</p>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="t1"><span class="n">1</span>Rencana &amp; Prompt</button>
+    <button class="tab" data-tab="t2"><span class="n">2</span>Generate di Flow</button>
+    <button class="tab" data-tab="t3"><span class="n">3</span>Rakit Video</button>
+  </nav>
+
+  <!-- TAB 1 -->
+  <section id="t1">
+    <div class="card">
+      <h2>Info produk</h2>
+      <div class="grid">
+        <div>
+          <label for="pName">Nama produk</label>
+          <input type="text" id="pName" placeholder="contoh: Kimy Vest Rajut Premium">
+        </div>
+        <div>
+          <label for="pCat">Kategori</label>
+          <select id="pCat">
+            <option value="atasan">Atasan / outer (vest, kemeja, kardigan)</option>
+            <option value="bawahan">Bawahan (celana, rok)</option>
+            <option value="dress">Dress / gamis</option>
+            <option value="hijab">Hijab</option>
+            <option value="sepatu">Sepatu / sandal</option>
+            <option value="tas">Tas</option>
+            <option value="aksesori">Aksesori</option>
+          </select>
+        </div>
+        <div>
+          <label for="pVisual">Tampilan produk <span class="hint">(warna, motif, detail khas)</span></label>
+          <textarea id="pVisual" placeholder="contoh: vest rajut pink, motif bunga, 3 tali pita merah di depan, pinggiran krem-marun bergelombang"></textarea>
+        </div>
+        <div>
+          <label for="pPoints">Keunggulan yang <u>benar</u> <span class="hint">(dari deskripsi/ulasan toko)</span></label>
+          <textarea id="pPoints" placeholder="contoh: bisa di-mix kaos atau kemeja, banyak pilihan warna"></textarea>
+        </div>
+        <div>
+          <label for="pModel">Model di video</label>
+          <select id="pModel">
+            <option value="woman">Cewek 20-an</option>
+            <option value="hijab">Cewek berhijab 20-an</option>
+            <option value="man">Cowok 20-an</option>
+            <option value="none">Tanpa wajah (fokus produk)</option>
+          </select>
+        </div>
+        <div>
+          <label for="pStyle">Gaya &amp; suasana</label>
+          <select id="pStyle">
+            <option value="soft">Soft &amp; manis (kamar terang, kafe)</option>
+            <option value="office">Ngantor / rapi</option>
+            <option value="street">Street / kasual kota</option>
+            <option value="campus">Kampus</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-top:16px">
+        <label>Foto produk <span class="hint">(opsional, untuk dibaca AI &amp; jadi referensi Flow)</span></label>
+        <div class="drop" id="photoDrop">Klik atau taruh foto produk di sini</div>
+        <input type="file" id="photoInput" accept="image/*" class="hidden">
+        <div class="photo-prev hidden" id="photoPrev">
+          <canvas id="photoCanvas"></canvas>
+          <div style="flex:1;min-width:220px">
+            <label for="cropTop">Potong bagian atas <span class="hint">(sembunyikan wajah model toko)</span></label>
+            <input type="range" id="cropTop" min="0" max="50" value="25" style="width:100%">
+            <label for="cropBottom" style="margin-top:8px">Potong bagian bawah</label>
+            <input type="range" id="cropBottom" min="0" max="40" value="10" style="width:100%">
+            <p class="hint">Upload foto hasil potongan ini ke Flow sebagai <b>Ingredients</b>, supaya AI tidak meniru wajah orang asli.</p>
+            <button class="btn ghost small" id="savePhoto">Simpan foto referensi</button>
+            <div class="status" id="photoStatus"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Panjang video</h2>
+      <p class="hint" style="margin-top:-6px">1 klip Flow ≈ 8 detik ≈ 10 kredit (Veo Lite). Akun gratis dapat ±50 kredit/hari.</p>
+      <div class="dur" id="durBox"></div>
+      <div class="row" style="margin-top:14px">
+        <label class="check"><input type="checkbox" id="optNarasi" checked> Pakai narasi suara (Bahasa Indonesia)</label>
+        <label class="check"><input type="checkbox" id="optEnd" checked> Tambah penutup foto produk + ajakan klik (±2 detik)</label>
+      </div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn" id="genBtn">Buat rencana video</button>
+        <span class="status" id="genStatus"></span>
+      </div>
+    </div>
+
+    <div id="planOut" class="hidden">
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <h2 style="margin:0">Rencana video <span class="pill" id="planDur"></span></h2>
+          <button class="btn ghost small" id="copyAll">Salin semua prompt</button>
+        </div>
+        <p class="hint" id="planSource"></p>
+        <h3 style="margin-top:12px">Teks hook di layar</h3>
+        <div class="narasi" id="hookText"></div>
+      </div>
+      <div id="clipsOut"></div>
+      <div class="card">
+        <h2>Caption siap pakai</h2>
+        <h3>Shopee Video</h3>
+        <pre id="capShopee"></pre>
+        <div class="copybar"><button class="btn ghost small" data-copy="capShopee">Salin</button></div>
+        <h3 style="margin-top:14px">Threads / Instagram</h3>
+        <pre id="capThreads"></pre>
+        <div class="copybar"><button class="btn ghost small" data-copy="capThreads">Salin</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 2 -->
+  <section id="t2" class="hidden">
+    <div class="card">
+      <h2>Cara generate di Google Flow (gratis)</h2>
+      <ol class="steps-ol">
+        <li>Buka <a href="https://flow.google.com" target="_blank" rel="noopener">flow.google.com</a> di Chrome/Safari, login, buat <b>New project</b>.</li>
+        <li>Klik ikon pengaturan di kotak prompt → pilih <b>Video</b> → <b>Ingredients</b> → rasio <b>9:16</b> → jumlah <b>x1</b> (hemat kredit).</li>
+        <li>Klik <b>+</b> → upload <b>foto referensi</b> dari langkah 1 (yang sudah dipotong).</li>
+        <li>Tempel <b>prompt Klip 1</b>, klik panah generate. Tunggu ±1–2 menit.</li>
+        <li>Cek hasilnya: apakah produk <b>sama persis</b> dengan barang asli? Kalau beda jauh, jangan dipakai.</li>
+        <li>Ulangi untuk klip berikutnya (pasang ulang foto referensinya tiap kali).</li>
+        <li>Buka tiap klip → <b>⋮</b> → <b>Download media</b> → <b>720p Original size</b>. Simpan ke satu folder.</li>
+      </ol>
+      <p class="note">Tips: kalau wajah/tangan terlihat aneh, buang klipnya dan coba lagi besok dengan kredit baru. Kualitas lebih penting dari jumlah.</p>
+    </div>
+  </section>
+
+  <!-- TAB 3 -->
+  <section id="t3" class="hidden">
+    <div class="card">
+      <h2>1. Masukkan klip dari Flow</h2>
+      <div class="drop" id="clipDrop">Klik atau taruh file video (.mp4) di sini, boleh sekaligus</div>
+      <input type="file" id="clipInput" accept="video/*" multiple class="hidden">
+      <div class="cliplist" id="clipList" style="margin-top:14px"></div>
+      <p class="status" id="clipTotal"></p>
+    </div>
+
+    <div class="card">
+      <h2>2. Teks &amp; label</h2>
+      <div class="grid">
+        <div>
+          <label for="ovHook">Teks hook (detik awal)</label>
+          <input type="text" id="ovHook" placeholder="Outfit manis tanpa ribet? Cuma 1 item ini">
+        </div>
+        <div>
+          <label for="ovCta">Teks ajakan di akhir</label>
+          <input type="text" id="ovCta" value="Cek link di keranjang kuning 🛒">
+        </div>
+        <div>
+          <label for="ovLabel">Label AI <span class="hint">(wajib, jangan dihapus)</span></label>
+          <input type="text" id="ovLabel" value="Visual dibuat dengan AI">
+        </div>
+        <div>
+          <label>Opsi</label>
+          <label class="check"><input type="checkbox" id="ovSubs" checked> Tampilkan subtitle per klip</label>
+          <label class="check"><input type="checkbox" id="ovEnd" checked> Penutup foto produk (2 detik)</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>3. Pratinjau &amp; simpan</h2>
+      <div class="preview">
+        <canvas id="stage" width="720" height="1280"></canvas>
+        <div style="flex:1;min-width:240px">
+          <p class="hint">Video dirakit langsung di browser kamu, berjalan secara real-time (video 24 detik butuh ±24 detik). Biarkan tab ini tetap terbuka selama proses.</p>
+          <div class="row">
+            <button class="btn" id="renderBtn" disabled>Rakit video</button>
+            <button class="btn ghost" id="saveBtn" disabled>Simpan video</button>
+          </div>
+          <div class="progress"><div id="prog"></div></div>
+          <p class="status" id="renderStatus"></p>
+          <video id="resultVid" class="hidden" controls playsinline style="width:220px;border-radius:12px;margin-top:8px"></video>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const store = {
+    get(k){ try { return JSON.parse(localStorage.getItem(k)); } catch(e){ return null; } },
+    set(k,v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} }
+  };
+
+  // ---------- tabs ----------
+  document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () => showTab(b.dataset.tab)));
+  function showTab(id){
+    document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === id));
+    ['t1','t2','t3'].forEach(t => $(t).classList.toggle('hidden', t !== id));
+  }
+
+  // ---------- capabilities ----------
+  let sample = null, downloads = null;
+  if (window.claude && window.claude.use) {
+    window.claude.use('sample').then(s => { sample = s; }).catch(() => {});
+    window.claude.use('downloads').then(d => { downloads = d; }).catch(() => {});
+  }
+
+  // ---------- duration ----------
+  const DURS = [8,16,24,32,40];
+  let dur = store.get('sva_dur') || 24;
+  function renderDur(){
+    $('durBox').innerHTML = DURS.map(d => {
+      const n = d/8;
+      return `<button data-d="${d}" class="${d===dur?'on':''}"><b>${d} dtk</b><span>${n} klip · ${n*10} kredit</span></button>`;
+    }).join('');
+    $('durBox').querySelectorAll('button').forEach(b => b.onclick = () => { dur = +b.dataset.d; store.set('sva_dur', dur); renderDur(); });
+  }
+  renderDur();
+
+  // ---------- form draft ----------
+  const fields = ['pName','pCat','pVisual','pPoints','pModel','pStyle'];
+  const draft = store.get('sva_form') || {};
+  fields.forEach(f => { if (draft[f] != null) $(f).value = draft[f]; $(f).addEventListener('input', saveDraft); $(f).addEventListener('change', saveDraft); });
+  function saveDraft(){ const o = {}; fields.forEach(f => o[f] = $(f).value); store.set('sva_form', o); }
+
+  // ---------- photo ----------
+  let photoImg = null, photoBlob = null, croppedBlob = null;
+  setupDrop($('photoDrop'), $('photoInput'), files => loadPhoto(files[0]));
+  function loadPhoto(file){
+    if (!file) return;
+    photoBlob = file;
+    const img = new Image();
+    img.onload = () => { photoImg = img; $('photoPrev').classList.remove('hidden'); drawCrop(); };
+    img.src = URL.createObjectURL(file);
+  }
+  ['cropTop','cropBottom'].forEach(id => $(id).addEventListener('input', drawCrop));
+  function drawCrop(){
+    if (!photoImg) return;
+    const t = +$('cropTop').value/100, b = +$('cropBottom').value/100;
+    const sy = photoImg.height*t, sh = photoImg.height*(1-t-b);
+    const c = $('photoCanvas');
+    c.width = photoImg.width; c.height = Math.max(10, sh);
+    c.getContext('2d').drawImage(photoImg, 0, sy, photoImg.width, sh, 0, 0, c.width, c.height);
+    c.toBlob(bl => { croppedBlob = bl; }, 'image/jpeg', 0.92);
+  }
+  $('savePhoto').onclick = async () => {
+    if (!croppedBlob) return;
+    try {
+      await saveFile(croppedBlob, 'referensi-produk.jpg');
+      $('photoStatus').textContent = 'Tersimpan.';
+    } catch(e){ $('photoStatus').textContent = 'Penyimpanan dibatalkan.'; }
+  };
+
+  // ---------- planning ----------
+  const MODEL = {
+    woman: { en:'a young Indonesian woman in her mid-20s with shoulder-length black hair', voice:'female' },
+    hijab: { en:'a young Indonesian woman in her mid-20s wearing a neutral-toned hijab', voice:'female' },
+    man:   { en:'a young Indonesian man in his mid-20s with short neat black hair', voice:'male' },
+    none:  { en:'a person whose face is never shown (frame from the neck down)', voice:'female' }
+  };
+  const STYLE = {
+    soft:   { room:'a bright minimalist bedroom with soft morning light', out:'a sunny tree-lined sidewalk toward a cozy café', sit:'sitting by the window in a cozy café with warm light' },
+    office: { room:'a clean modern apartment with soft daylight, getting ready for work', out:'a modern office lobby with large windows', sit:'sitting at a tidy office desk with a laptop' },
+    street: { room:'a stylish apartment with a full-length mirror and city view', out:'a lively city street with shops in the afternoon', sit:'sitting on a bench outside a coffee shop on a city street' },
+    campus: { room:'a bright dorm room with a full-length mirror', out:'a green university campus walkway', sit:'sitting at a campus library table with books' }
+  };
+  const SCENES = [
+    { key:'mirror', name:'Hook · cek cermin',   v:(m,s,p)=>`${cap(m)} stands in front of a full-length mirror in ${s.room}, wearing ${p}. They adjust it, turn slightly left and right to check the fit, and smile at the reflection. Handheld smartphone feel.` },
+    { key:'detail', name:'Detail produk',       v:(m,s,p)=>`Close-up shot of hands gently touching and showing the details of ${p}, worn by the person. Fingers slowly trace the pattern and details. The face is not shown. Slow smooth camera movement, focus on texture and stitching.` },
+    { key:'walk',   name:'Lifestyle · jalan',   v:(m,s,p)=>`${cap(m)} walks happily along ${s.out}, wearing ${p}. The camera follows from the front at medium distance, gentle breeze, warm afternoon light.` },
+    { key:'sit',    name:'Lifestyle · duduk',   v:(m,s,p)=>`${cap(m)} is ${s.sit}, wearing ${p}, sipping a drink and looking relaxed. Camera slowly pushes in from medium shot.` },
+    { key:'spin',   name:'OOTD · full body',    v:(m,s,p)=>`Full-body shot of ${m} doing a slow, natural turn to show the full outfit, wearing ${p}, in ${s.room}. Static camera, even soft light.` }
+  ];
+  function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+  function productPhrase(visualEn, name){
+    const base = visualEn && visualEn.trim() ? visualEn.trim() : (name || 'the product');
+    return `the ${base} from the reference image, keeping it identical in color, pattern and details`;
+  }
+
+  function buildPrompt(sceneText, narasi, voice, withNarasi){
+    let p = `${sceneText} Realistic, natural colors, vertical 9:16.`;
+    if (withNarasi && narasi) p += ` Audio: soft calm background music and a warm off-screen ${voice} narrator speaking Indonesian: "${narasi}" The person on screen does not speak.`;
+    else p += ` Audio: soft calm background music only, no speech.`;
+    return p;
+  }
+
+  function fallbackPlan(info, n){
+    const pts = info.points.split(/[,;\n]+/).map(s=>s.trim()).filter(Boolean);
+    const nm = info.name || 'produk ini';
+    const nar = [
+      `Lagi cari outfit yang manis tapi nggak ribet? Coba ${nm.toLowerCase().includes('vest')?'vest':'item'} ini.`,
+      pts[0] ? `Detailnya: ${pts[0]}.` : `Lihat deh detailnya, rapi dan cantik dilihat dari dekat.`,
+      pts[1] ? `${cap(pts[1])}, jadi gampang dipadukan.` : `Tinggal dipadukan sama baju basic, langsung siap jalan.`,
+      `Dipakai santai pun tetap kelihatan niat.`,
+      `Mau coba juga? Cek link-nya di keranjang kuning.`
+    ];
+    return {
+      product_visual_en: info.visual || info.name,
+      hook: 'Outfit manis tanpa ribet? Cuma butuh 1 item ini',
+      clips: SCENES.slice(0,n).map((s,i)=>({ scene_key:s.key, narasi: nar[i] })),
+      caption_shopee: `${nm} ✨\n${pts.slice(0,3).map(p=>'• '+p).join('\n') || '• Gampang di-mix & match'}\nCek link di keranjang kuning ya 🛒\n#OOTD #FashionWanita #ShopeeHaul`,
+      caption_threads: `Jujur, item ini bikin outfit basic kelihatan lebih niat.\n\n${pts[0] ? 'Yang aku suka: '+pts[0]+'.' : ''}\n\n(Visual dibuat dengan AI. Link ada di reply 👇)`
+    };
+  }
+
+  $('genBtn').onclick = async () => {
+    const info = { name:$('pName').value.trim(), cat:$('pCat').value, visual:$('pVisual').value.trim(), points:$('pPoints').value.trim(), model:$('pModel').value, style:$('pStyle').value };
+    const n = dur/8;
+    const withNar = $('optNarasi').checked;
+    $('genBtn').disabled = true;
+    let plan = null, source = '';
+    if (sample) {
+      $('genStatus').textContent = 'Claude sedang menyusun naskah…';
+      try {
+        let imgs;
+        try { const lim = await sample.limits(); if (lim && lim.images && (croppedBlob || photoBlob)) imgs = [croppedBlob || photoBlob]; } catch(e){}
+        const prompt = `Kamu copywriter konten affiliate Shopee Indonesia. Buat rencana video vertikal ${dur} detik (${n} klip @8 detik) untuk produk fashion.
+Data produk:
+- Nama: ${info.name || '-'}
+- Kategori: ${info.cat}
+- Tampilan (dari penjual): ${info.visual || '-'}
+- Keunggulan yang BENAR: ${info.points || '-'}
+${imgs ? '- Foto produk terlampir: baca warna, motif, dan detail visualnya.' : ''}
+Aturan:
+- JANGAN mengarang klaim bahan/kualitas yang tidak ada di data (misal adem, tidak gatal, premium) kecuali tertulis di atas.
+- Narasi per klip bahasa Indonesia santai, maksimal 13 kata (harus muat 8 detik).
+- Jangan menulis seolah-olah testimoni pribadi; narator dari luar layar.
+- Urutan klip memakai scene_key dari daftar ini (pilih ${n}, boleh urutan berbeda, tidak berulang): mirror, detail, walk, sit, spin. Klip pertama sebaiknya mirror.
+- product_visual_en: deskripsi visual produk dalam bahasa Inggris (max 30 kata) yang sangat spesifik (warna, motif, detail), tanpa kata "the".
+- hook: teks layar pembuka max 8 kata.
+- caption_shopee: caption Shopee Video max 60 kata + 3-5 hashtag.
+- caption_threads: caption Threads gaya storytelling max 60 kata, sertakan "(Visual dibuat dengan AI)" dan "link di reply".
+Balas HANYA JSON: {"product_visual_en":"","hook":"","clips":[{"scene_key":"","narasi":""}],"caption_shopee":"","caption_threads":""}`;
+        plan = await sample.json(prompt, imgs ? { images: imgs, modelTier:'default' } : { modelTier:'default' });
+        if (!plan || !Array.isArray(plan.clips) || !plan.clips.length) throw new Error('bad');
+        source = 'Naskah disusun oleh Claude dari data produk' + (imgs ? ' dan foto.' : '.');
+      } catch(e) {
+        plan = null;
+        if (e && e.code === 'rate_limited') $('genStatus').textContent = 'Terlalu sering, pakai template dulu.';
+      }
+    }
+    if (!plan) { plan = fallbackPlan(info, n); source = 'Dibuat dari template. Edit narasinya di tab Rakit Video biar lebih pas.'; }
+    plan.clips = plan.clips.slice(0, n);
+    while (plan.clips.length < n) { const used = plan.clips.map(c=>c.scene_key); const s = SCENES.find(s=>!used.includes(s.key)) || SCENES[0]; plan.clips.push({scene_key:s.key, narasi:''}); }
+    renderPlan(plan, info, withNar, source);
+    $('genStatus').textContent = '';
+    $('genBtn').disabled = false;
+  };
+
+  let currentPlan = null;
+  function renderPlan(plan, info, withNar, source){
+    const M = MODEL[info.model] || MODEL.woman, S = STYLE[info.style] || STYLE.soft;
+    const prod = productPhrase(plan.product_visual_en || info.visual, info.name);
+    plan.clips.forEach(c => {
+      const sc = SCENES.find(s => s.key === c.scene_key) || SCENES[0];
+      c.name = sc.name;
+      c.prompt = buildPrompt(sc.v(M.en, S, prod), c.narasi, M.voice, withNar);
+    });
+    currentPlan = plan;
+    $('planOut').classList.remove('hidden');
+    $('planDur').textContent = `${dur} detik · ${plan.clips.length} klip`;
+    $('planSource').textContent = source;
+    $('hookText').textContent = plan.hook || '';
+    $('clipsOut').innerHTML = plan.clips.map((c,i) => `
+      <div class="card clip">
+        <div class="top"><h3 style="margin:0">Klip ${i+1} · ${esc(c.name)}</h3><span class="pill">8 dtk</span></div>
+        ${withNar && c.narasi ? `<div class="narasi">🎙️ ${esc(c.narasi)}</div>` : ''}
+        <pre id="pr${i}">${esc(c.prompt)}</pre>
+        <div class="copybar"><button class="btn ghost small" data-copy="pr${i}">Salin prompt</button></div>
+      </div>`).join('');
+    $('capShopee').textContent = plan.caption_shopee || '';
+    $('capThreads').textContent = plan.caption_threads || '';
+    if (plan.hook) $('ovHook').value = plan.hook;
+    bindCopy();
+    $('planOut').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  $('copyAll').onclick = e => {
+    if (!currentPlan) return;
+    copyText(currentPlan.clips.map((c,i)=>`KLIP ${i+1} (${c.name})\n${c.prompt}`).join('\n\n'), e.target);
+  };
+  function bindCopy(){
+    document.querySelectorAll('[data-copy]').forEach(b => b.onclick = () => copyText($(b.dataset.copy).textContent, b));
+  }
+  bindCopy();
+  async function copyText(t, btn){
+    const old = btn.textContent;
+    try { await navigator.clipboard.writeText(t); btn.textContent = 'Tersalin ✓'; }
+    catch(e){ btn.textContent = 'Pilih teks lalu salin manual'; }
+    setTimeout(()=>btn.textContent = old, 1600);
+  }
+  function esc(s){ return String(s||'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+  // ---------- clips ----------
+  let clips = [];
+  setupDrop($('clipDrop'), $('clipInput'), files => addClips(files));
+  function addClips(files){
+    [...files].filter(f => f.type.startsWith('video') || /\.(mp4|mov|webm)$/i.test(f.name))
+      .sort((a,b)=>a.name.localeCompare(b.name, undefined, {numeric:true}))
+      .forEach(f => {
+        const url = URL.createObjectURL(f);
+        const c = { file:f, url, dur:0, sub:'', mute:false };
+        const v = document.createElement('video');
+        v.preload = 'metadata'; v.src = url;
+        v.onloadedmetadata = () => { c.dur = v.duration || 8; renderClips(); };
+        const idx = clips.length;
+        if (currentPlan && currentPlan.clips[idx]) c.sub = currentPlan.clips[idx].narasi || '';
+        clips.push(c);
+      });
+    renderClips();
+  }
+  function renderClips(){
+    $('clipList').innerHTML = clips.map((c,i) => `
+      <div class="item">
+        <video src="${c.url}" muted playsinline preload="metadata"></video>
+        <div>
+          <div style="font-weight:600;font-size:14px">Klip ${i+1} <span class="hint">${esc(c.file.name)} · ${c.dur ? c.dur.toFixed(1)+' dtk' : '…'}</span></div>
+          <input type="text" data-sub="${i}" value="${esc(c.sub)}" placeholder="Subtitle klip ini (opsional)" style="margin-top:6px">
+          <label class="check"><input type="checkbox" data-mute="${i}" ${c.mute?'checked':''}> Matikan suara asli klip ini</label>
+        </div>
+        <div class="ctrls">
+          <button class="btn ghost small" data-up="${i}" ${i===0?'disabled':''}>↑</button>
+          <button class="btn ghost small" data-down="${i}" ${i===clips.length-1?'disabled':''}>↓</button>
+          <button class="btn ghost small" data-del="${i}">✕</button>
+        </div>
+      </div>`).join('');
+    $('clipList').querySelectorAll('[data-sub]').forEach(el => el.oninput = () => clips[+el.dataset.sub].sub = el.value);
+    $('clipList').querySelectorAll('[data-mute]').forEach(el => el.onchange = () => clips[+el.dataset.mute].mute = el.checked);
+    $('clipList').querySelectorAll('[data-up]').forEach(el => el.onclick = () => move(+el.dataset.up, -1));
+    $('clipList').querySelectorAll('[data-down]').forEach(el => el.onclick = () => move(+el.dataset.down, 1));
+    $('clipList').querySelectorAll('[data-del]').forEach(el => el.onclick = () => { URL.revokeObjectURL(clips[+el.dataset.del].url); clips.splice(+el.dataset.del,1); renderClips(); });
+    const total = clips.reduce((a,c)=>a+(c.dur||0),0) + ($('ovEnd').checked && photoImg ? 2 : 0);
+    $('clipTotal').textContent = clips.length ? `Total durasi: ±${Math.round(total)} detik${$('ovEnd').checked && !photoImg ? ' (penutup foto butuh foto produk di langkah 1)' : ''}` : '';
+    $('renderBtn').disabled = !clips.length;
+    drawIdle();
+  }
+  function move(i, d){ const j = i+d; [clips[i], clips[j]] = [clips[j], clips[i]]; renderClips(); }
+  $('ovEnd').addEventListener('change', renderClips);
+
+  // ---------- drawing ----------
+  const stage = $('stage'), ctx = stage.getContext('2d');
+  const W = 720, H = 1280;
+  function drawIdle(){
+    ctx.fillStyle = '#111'; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle = '#888'; ctx.font = '600 32px "Plus Jakarta Sans", sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(clips.length ? 'Klik "Rakit video"' : 'Belum ada klip', W/2, H/2);
+  }
+  drawIdle();
+  function drawCover(src, sw, sh){
+    const r = Math.max(W/sw, H/sh), dw = sw*r, dh = sh*r;
+    ctx.drawImage(src, (W-dw)/2, (H-dh)/2, dw, dh);
+  }
+  function wrap(text, maxW){
+    const words = String(text).split(/\s+/), lines = []; let line = '';
+    words.forEach(w => { const t = line ? line+' '+w : w; if (ctx.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; });
+    if (line) lines.push(line); return lines;
+  }
+  function box(text, y, size, opts={}){
+    if (!text) return;
+    ctx.font = `800 ${size}px "Plus Jakarta Sans", sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const lines = wrap(text, W-140), lh = size*1.25, pad = 22;
+    const widest = Math.max(...lines.map(l => ctx.measureText(l).width));
+    const bh = lines.length*lh + pad*1.4, bw = widest + pad*2;
+    const top = y - bh/2;
+    ctx.fillStyle = opts.bg || 'rgba(255,255,255,0.94)';
+    roundRect((W-bw)/2, top, bw, bh, 22); ctx.fill();
+    ctx.fillStyle = opts.color || '#231a1c';
+    lines.forEach((l,i) => ctx.fillText(l, W/2, top + pad*0.7 + lh*i + lh/2));
+  }
+  function roundRect(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+  function aiLabel(){
+    const t = $('ovLabel').value.trim(); if (!t) return;
+    ctx.font = '600 24px "Plus Jakarta Sans", sans-serif'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    const w = ctx.measureText(t).width + 28;
+    ctx.fillStyle = 'rgba(0,0,0,0.55)'; roundRect(24, H-78, w, 44, 14); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.fillText(t, 38, H-56);
+  }
+  function overlays(globalT, totalT, clipIdx, clipT, isEnd){
+    if (globalT < 3.2 && !isEnd) box($('ovHook').value.trim(), 250, 50);
+    if ($('ovSubs').checked && !isEnd && clips[clipIdx] && clips[clipIdx].sub && clipT > 0.4) box(clips[clipIdx].sub, H-260, 36, {bg:'rgba(20,12,14,0.72)', color:'#fff'});
+    if (globalT > totalT - 2.6) box($('ovCta').value.trim(), isEnd ? H*0.78 : 420, 46, {bg:'#c2345a', color:'#fff'});
+    aiLabel();
+  }
+
+  // ---------- render ----------
+  let resultBlob = null, resultName = '';
+  function pickMime(){
+    const opts = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4;codecs=avc1,mp4a','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm'];
+    return opts.find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || '';
+  }
+  $('renderBtn').onclick = async () => {
+    if (!clips.length) return;
+    if (!window.MediaRecorder || !stage.captureStream) { $('renderStatus').textContent = 'Browser ini belum mendukung perakitan video. Coba Chrome di laptop.'; return; }
+    $('renderBtn').disabled = true; $('saveBtn').disabled = true; $('resultVid').classList.add('hidden');
+    const useEnd = $('ovEnd').checked && photoImg;
+    const totalT = clips.reduce((a,c)=>a+(c.dur||8),0) + (useEnd ? 2 : 0);
+    const mime = pickMime();
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    const dest = ac.createMediaStreamDestination();
+    const stream = new MediaStream([...stage.captureStream(30).getVideoTracks(), ...dest.stream.getAudioTracks()]);
+    const rec = new MediaRecorder(stream, mime ? { mimeType: mime, videoBitsPerSecond: 6000000 } : undefined);
+    const chunks = [];
+    rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+    const stopped = new Promise(r => rec.onstop = r);
+    // silent keep-alive so audio track always has data
+    const osc = ac.createOscillator(), g0 = ac.createGain(); g0.gain.value = 0; osc.connect(g0).connect(dest); osc.start();
+    rec.start(250);
+    let offset = 0;
+    try {
+      for (let i = 0; i < clips.length; i++) {
+        const c = clips[i];
+        $('renderStatus').textContent = `Merakit klip ${i+1} dari ${clips.length}…`;
+        const v = document.createElement('video');
+        v.src = c.url; v.playsInline = true; v.preload = 'auto';
+        await new Promise((res, rej) => { v.oncanplay = res; v.onerror = rej; v.load(); });
+        const srcNode = ac.createMediaElementSource(v); const gn = ac.createGain(); gn.gain.value = c.mute ? 0 : 1;
+        srcNode.connect(gn).connect(dest);
+        await v.play();
+        await new Promise(res => {
+          const tick = () => {
+            drawCover(v, v.videoWidth || W, v.videoHeight || H);
+            const t = offset + v.currentTime;
+            overlays(t, totalT, i, v.currentTime, false);
+            $('prog').style.width = Math.min(100, t/totalT*100) + '%';
+            if (v.ended || v.currentTime >= (c.dur||8) - 0.03) return res();
+            requestAnimationFrame(tick);
+          };
+          v.onended = res;
+          tick();
+        });
+        v.pause(); srcNode.disconnect();
+        offset += c.dur || v.duration || 8;
+      }
+      if (useEnd) {
+        $('renderStatus').textContent = 'Menambahkan penutup…';
+        const start = performance.now();
+        await new Promise(res => {
+          const tick = () => {
+            const e = (performance.now() - start)/1000;
+            ctx.fillStyle = '#faf6f3'; ctx.fillRect(0,0,W,H);
+            const endImg = $('photoCanvas');
+            const iw = endImg.width, ih = endImg.height, r = Math.min((W-120)/iw, (H*0.6)/ih);
+            const sc = r * (1 + e*0.02);
+            ctx.drawImage(endImg, (W-iw*sc)/2, H*0.12, iw*sc, ih*sc);
+            overlays(offset + e, totalT, -1, e, true);
+            $('prog').style.width = Math.min(100, (offset+e)/totalT*100) + '%';
+            if (e >= 2) return res();
+            requestAnimationFrame(tick);
+          };
+          tick();
+        });
+      }
+    } catch(err) {
+      $('renderStatus').textContent = 'Gagal memutar salah satu klip. Pastikan file-nya .mp4 dari Flow.';
+    }
+    rec.stop(); await stopped; osc.stop(); ac.close();
+    const type = (mime.split(';')[0]) || 'video/webm';
+    resultBlob = new Blob(chunks, { type });
+    const ext = type.includes('mp4') ? 'mp4' : 'webm';
+    resultName = `video-affiliate-${Date.now()}.${ext}`;
+    $('resultVid').src = URL.createObjectURL(resultBlob); $('resultVid').classList.remove('hidden');
+    $('prog').style.width = '100%';
+    $('renderStatus').textContent = `Selesai: ±${Math.round(totalT)} detik, format .${ext}` + (ext === 'webm' ? '. Shopee lebih cocok .mp4, jadi buka di CapCut lalu ekspor ulang ke .mp4.' : '.');
+    $('renderBtn').disabled = false; $('saveBtn').disabled = false;
+  };
+  $('saveBtn').onclick = async () => {
+    if (!resultBlob) return;
+    try { await saveFile(resultBlob, resultName); $('renderStatus').textContent = 'Video tersimpan. Jangan lupa cek ulang sebelum upload.'; }
+    catch(e){ $('renderStatus').textContent = 'Penyimpanan dibatalkan.'; }
+  };
+
+  // ---------- helpers ----------
+  async function saveFile(blob, name){
+    if (downloads) { await downloads.save({ filename: name, data: blob }); return; }
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+  }
+  if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(()=>{});
+  function setupDrop(zone, input, onFiles){
+    zone.onclick = () => input.click();
+    input.onchange = () => { if (input.files.length) onFiles(input.files); input.value = ''; };
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('over'); if (e.dataTransfer.files.length) onFiles(e.dataTransfer.files); });
+  }
+})();
+</script>
+</body>
+</html>
