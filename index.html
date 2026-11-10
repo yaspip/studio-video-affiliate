@@ -66,6 +66,9 @@
   #stage{width:270px;height:480px;border-radius:16px;background:#111;border:1px solid var(--line)}
   .progress{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:10px}
   .progress div{height:100%;width:0;background:var(--accent);transition:width .2s}
+  .thumbs{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+  .thumbs img{width:84px;height:84px;object-fit:cover;border-radius:10px;border:2px solid var(--line);cursor:pointer}
+  .thumbs img.on{border-color:var(--accent)}
   .hidden{display:none !important}
   .check{display:flex;gap:8px;align-items:center;font-size:14px;margin:6px 0}
   .check input{width:18px;height:18px}
@@ -137,7 +140,14 @@
       </div>
 
       <div style="margin-top:16px">
-        <label>Foto produk <span class="hint">(opsional, untuk dibaca AI &amp; jadi referensi Flow)</span></label>
+        <label for="linkIn">Link produk Shopee <span class="hint">(nama &amp; foto diambil otomatis)</span></label>
+        <div class="row" style="flex-wrap:nowrap">
+          <input type="text" id="linkIn" placeholder="Tempel link produk Shopee atau link foto di sini">
+          <button class="btn small" id="linkBtn" style="white-space:nowrap">Ambil foto</button>
+        </div>
+        <div class="status" id="linkStatus"></div>
+        <div class="thumbs hidden" id="linkThumbs"></div>
+        <label style="margin-top:12px">Atau upload foto manual</label>
         <div class="drop" id="photoDrop">Klik atau taruh foto produk di sini</div>
         <input type="file" id="photoInput" accept="image/*" class="hidden">
         <div class="photo-prev hidden" id="photoPrev">
@@ -312,6 +322,58 @@
     img.src = URL.createObjectURL(file);
   }
   ['cropTop','cropBottom'].forEach(id => $(id).addEventListener('input', drawCrop));
+
+  // ---------- Shopee link ----------
+  const CDN = 'https://down-id.img.susercontent.com/file/';
+  function parseLink(raw){
+    const out = { name:'', ids:[] };
+    let t = (raw || '').trim(); if (!t) return out;
+    if (!/^https?:/i.test(t) && /^[a-z]{2}-\d{8}-[\w-]+$/i.test(t)) { out.ids = [t]; return out; }
+    let u; try { u = new URL(t); } catch(e){ return out; }
+    if (/susercontent\.com$/i.test(u.hostname)) {
+      const id = u.pathname.split('/').pop().split('@')[0].replace(/_tn$/,'');
+      if (id) out.ids = [id];
+      return out;
+    }
+    const ids = u.searchParams.get('image_ids');
+    if (ids) out.ids = ids.split(',').map(x => x.trim()).filter(Boolean);
+    const seg = decodeURIComponent(u.pathname.split('/').filter(Boolean)[0] || '');
+    const m = seg.match(/^(.*?)-i\.\d+\.\d+$/);
+    if (m) out.name = m[1].replace(/-/g,' ').replace(/\s+/g,' ').trim();
+    return out;
+  }
+  async function fetchImage(id){
+    const r = await fetch(CDN + encodeURIComponent(id));
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const b = await r.blob();
+    if (!b.type.startsWith('image')) throw new Error('bukan gambar');
+    return b;
+  }
+  $('linkBtn').onclick = async () => {
+    const info = parseLink($('linkIn').value);
+    if (info.name && !$('pName').value.trim()) { $('pName').value = info.name.slice(0, 80); saveDraft(); }
+    if (!info.ids.length) {
+      $('linkStatus').textContent = info.name
+        ? 'Nama produk terisi. Link ini tidak membawa ID foto: di Shopee buka fotonya lalu bagikan, atau tempel link fotonya langsung.'
+        : 'Link tidak dikenali. Tempel link produk Shopee atau link foto (susercontent.com).';
+      return;
+    }
+    $('linkBtn').disabled = true; $('linkStatus').textContent = 'Mengambil foto…';
+    const box = $('linkThumbs'); box.innerHTML = ''; box.classList.remove('hidden');
+    let first = true, ok = 0;
+    for (const id of info.ids.slice(0, 8)) {
+      try {
+        const b = await fetchImage(id);
+        const img = document.createElement('img'); img.src = URL.createObjectURL(b); img.alt = 'Foto produk';
+        img.onclick = () => { box.querySelectorAll('img').forEach(x => x.classList.remove('on')); img.classList.add('on'); loadPhoto(b); };
+        box.appendChild(img); ok++;
+        if (first) { img.classList.add('on'); loadPhoto(b); first = false; }
+      } catch(e) {}
+    }
+    $('linkStatus').textContent = ok ? `${ok} foto diambil${info.name ? ' dan nama produk terisi' : ''}. Klik foto untuk memilih, lalu atur potongannya di bawah.` : 'Foto tidak bisa diambil. Coba upload manual.';
+    if (!ok) box.classList.add('hidden');
+    $('linkBtn').disabled = false;
+  };
   function drawCrop(){
     if (!photoImg) return;
     const t = +$('cropTop').value/100, b = +$('cropBottom').value/100;
